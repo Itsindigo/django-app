@@ -16,7 +16,21 @@ class HomePageTest(TestCase):
     def test_home_page_return_correct_html(self):
         request = HttpRequest()
         response = home_page(request)
-        expected_html = render_to_string('home.html')
+        expected_html = render_to_string('home.html', request=request)
+        self.assertEqual(response.content.decode(), expected_html)
+
+    def test_home_page_can_save_a_POST_request(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST["item_text"] = 'example to-do'
+
+        response = home_page(request)
+        self.assertIn('example to-do', response.content.decode())
+        expected_html = render_to_string(
+            'home.html',
+            {'new_item_text': 'example to-do'},
+            request=request
+        )
         self.assertEqual(response.content.decode(), expected_html)
 
 # Create your tests here.

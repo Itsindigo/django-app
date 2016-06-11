@@ -19,22 +19,19 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn('To-Do', header_text)
 
         inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertEqual(
-            inputbox.get_attribute('placeholder'),
-            'Enter a to do'
-        )
-
         inputbox.send_keys('Buy Peacock Feathers')
-
         inputbox.send_keys(Keys.ENTER)
+
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Use Peacock Feathers to make a fly')
+        inputbox.send_keys(Keys.ENTER)
+
+
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Buy Peacock Feathers' for row in rows),
-            "New to-do item did not appear in table"
-        )
-
+        self.assertIn('1: Buy Peacock Feathers', [row.text for row in rows])
+        self.assertIn('2: Use Peacock Feathers to make a fly', [row.text for row in rows])
         self.fail('Finish the test!')
 
 if __name__ == '__main__':
